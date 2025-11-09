@@ -70,3 +70,30 @@ export const login = async (req: Request, res: Response) => {
         token
     });
 }
+
+export const me = async (req: Request, res: Response) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ error: 'Non authentifié' });
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.userId },
+            select: { 
+                id: true, 
+                name: true, 
+                email: true, 
+                role: true 
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'Utilisateur non trouvé' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}

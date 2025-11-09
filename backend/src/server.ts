@@ -3,7 +3,6 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import rootRouter from './routes/index.js'
 import { PrismaClient } from './generated/prisma/client.js'
-import { signUpSchema } from './schema/users.js'
 
 dotenv.config()
 
