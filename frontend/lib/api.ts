@@ -91,3 +91,72 @@ export const authAPI = {
     tokenManager.removeToken()
   }
 }
+
+export interface Product {
+  id: number
+  name: string
+  description: string | null
+  price: number
+  tags: string
+  createdAt: string
+  updatedAt: string
+}
+
+export const productsAPI = {
+  getProducts: async (): Promise<Product[]> => {
+    const response = await fetch(`${API_URL}/api/products`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Erreur lors de la récupération des produits')
+    }
+
+    return response.json()
+  },
+
+  getProductById: async (id: number): Promise<Product> => {
+    const response = await fetch(`${API_URL}/api/products/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Erreur lors de la récupération du produit')
+    }
+
+    return response.json()
+  },
+
+  deleteProduct: async (id: number): Promise<void> => {
+    const response = await fetch(`${API_URL}/api/products/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Erreur lors de la suppression du produit')
+    }
+  },
+
+  editProduct: async (id: number, data: Partial<Product>): Promise<Product> => {
+    const response = await fetch(`${API_URL}/api/products/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Erreur lors de la modification du produit')
+    }
+
+    return response.json()
+  }
+}
